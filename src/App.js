@@ -13,7 +13,7 @@ class App extends Component {
     let notes = [];
     let numbers = [];
 
-    const canvasHeight = 400;
+    const canvasHeight = 700;
     const canvasWidth = 1024;
     const gray = "#D8D8D8";
     const primary = "#333333";
@@ -25,7 +25,7 @@ class App extends Component {
 
     const bars = 4;
     const beats = 4;
-    const gridRows = 10;
+    const gridRows = 30;
     const rows = gridRows + 1;
     const col = (canvasWidth - 2 * paddingX) / (bars * beats);
     const row = (canvasHeight - 2 * paddingY) / rows;
@@ -56,13 +56,6 @@ class App extends Component {
 
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
         <svg width={canvasWidth} height={canvasHeight} version="1.1" xmlns="http://www.w3.org/2000/svg">
           {subMeter}
           {horMeter}
