@@ -13,42 +13,45 @@ class App extends Component {
     let notes = [];
     let numbers = [];
 
-    const canvasHeight = 300;
-    const canvasWidth = 800;
+    const canvasHeight = 400;
+    const canvasWidth = 1024;
     const gray = "#D8D8D8";
     const primary = "#333333";
     const yellow = "#FCFF0A";
 
     const grid = 2;
-    const meterSize = 6;
     const paddingX = 50;
     const paddingY = 16;
 
-    const columns = 4;
-    const gridRows = 5;
-    const rows = gridRows + 3;
-    const subColX = 4;
-    const subColY = 2;
-    const col = (canvasWidth - 2 * paddingX) / (columns * subColX);
-    const row = (canvasHeight - 2 * paddingY) / (rows * subColY - 1);
-    const fontSize = row;
+    const bars = 4;
+    const beats = 4;
+    const gridRows = 10;
+    const rows = gridRows + 1;
+    const col = (canvasWidth - 2 * paddingX) / (bars * beats);
+    const row = (canvasHeight - 2 * paddingY) / rows;
+    const fontSize = 14;
 
-    for (let i = 0; i < columns; i++) {
-      const offsetX = paddingX + col * i * subColX;
-      const meterY = paddingY + row * subColY;
-      numbers.push(<text x={offsetX - fontSize / 8} y={paddingY + row * subColY / 2} font-family="Helvetica" font-size={fontSize} fill={gray}> {i+1} </text>);
-      meter.push(<rect x={offsetX} y={meterY} width={meterSize} height={row * (rows - 2) * subColY} fill={gray} />);
-      subMeter.push(<rect x={offsetX + col * subColX / 2} y={meterY} width={grid} height={row * (rows - 2) * subColY} fill={primary} />);
+    const meterY = paddingY;
+    const barHeight = row * rows + grid;
+    for (let i = 0; i < bars; i++) {
+      const offsetX = paddingX + col * i * beats;
+      numbers.push(<text x={offsetX + col * beats / 2 + fontSize} y={meterY + fontSize / 2} font-family="Helvetica" font-size={fontSize} fill={gray}> {i+1} </text>);
+      meter.push(<rect x={offsetX + col * beats / 2} y={meterY} width={grid} height={barHeight} fill={gray} />);
+      subMeter.push(<rect x={offsetX} y={meterY} width={grid} height={barHeight} fill={primary} />);
     }
+    subMeter.push(<rect x={paddingX + col * bars * beats} y={meterY} width={grid} height={barHeight} fill={primary} />);
 
     for (let i = 0; i < gridRows; i++) {
-      const offsetY = paddingY + row * (i + 2) * subColY;
+      const offsetY = paddingY + row * (i + 1);
       horMeter.push(<rect x={paddingX} y={offsetY} width={canvasWidth - 2 * paddingX} height={grid} fill={primary} />);
+      const numX = (i < 9) ? paddingX - fontSize : paddingX - fontSize * 1.5;
+      numbers.push(<text x={numX} y={offsetY + grid * 2} font-family="Helvetica" font-size={fontSize} fill={primary}> {i+1} </text>);
     }
+    horMeter.push(<rect x={paddingX} y={paddingY + row * rows} width={canvasWidth - 2 * paddingX} height={grid} fill={primary} />);
 
-    const note = (measure, beat, y) => [paddingX + col * ((measure - 1) * subColX + (beat - 1)) - col / 2, paddingY + row * (y + 2) * subColY - row / 2];
-    const points = [note(1, 2, 0), note(1, 2, 2), note(1, 2, 4), note(1, 4, 0), note(1, 4, 2), note(2, 1, 4), note(2, 4, 2), note(3, 2, 0), note(3, 2, 2), note(3, 4, 0), note(3, 4, 2), note(4, 4, 2)];
-    points.forEach(x => notes.push(<rect x={x[0]} y={x[1]} width={col} height={row * subColY / 2} fill={yellow} />));
+    const note = (bar, beat, y) => [paddingX + col * ((bar - 1) * beats + (beat - 1)), paddingY + row * (y + 1)];
+    const points = [note(1, 1, 0), note(1, 2, 0), note(1, 3, 0), note(1, 2, 2), note(1, 2, 4), note(1, 4, 0), note(1, 4, 2), note(2, 1, 4), note(2, 4, 2), note(3, 2, 0), note(3, 2, 2), note(3, 4, 0), note(3, 4, 2), note(4, 4, 2)];
+    // points.forEach(x => notes.push(<rect x={x[0]} y={x[1]} width={col * 0.75} height={row} fill={yellow} />));
 
     return (
       <div className="App">
@@ -60,11 +63,11 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         <svg width={canvasWidth} height={canvasHeight} version="1.1" xmlns="http://www.w3.org/2000/svg" style={{backgroundColor: 'red'}}>
-          {numbers}
           {subMeter}
           {horMeter}
           {meter}
           {notes}
+          {numbers}
         </svg>
       </div>
     );
