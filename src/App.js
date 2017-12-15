@@ -27,9 +27,9 @@ class App extends Component {
     const columns = 4;
     const gridRows = 5;
     const rows = gridRows + 3;
-    const subColX = 8;
+    const subColX = 4;
     const subColY = 2;
-    const col = (canvasWidth - 2 * paddingX) / (columns * subColX - 1);
+    const col = (canvasWidth - 2 * paddingX) / (columns * subColX);
     const row = (canvasHeight - 2 * paddingY) / (rows * subColY - 1);
     const fontSize = row;
 
@@ -46,11 +46,9 @@ class App extends Component {
       horMeter.push(<rect x={paddingX} y={offsetY} width={canvasWidth - 2 * paddingX} height={grid} fill={primary} />);
     }
 
-    const noteX = (i) => paddingY + row * (i + 2) * subColY;
-    const noteY = (i) => paddingX + col * i;
-
-    const points = [[77, 70], [77, 147], [77, 224], [168, 70], [168, 147], [213, 224], [347, 147], [437, 70], [437, 147], [547, 70], [547, 147], [702, 147]];
-    points.forEach(x => notes.push(<rect x={x[0]} y={x[1]} width="38" height="26" fill={yellow} />));
+    const note = (measure, beat, y) => [paddingX + col * ((measure - 1) * subColX + (beat - 1)) - col / 2, paddingY + row * (y + 2) * subColY - row / 2];
+    const points = [note(1, 2, 0), note(1, 2, 2), note(1, 2, 4), note(1, 4, 0), note(1, 4, 2), note(2, 1, 4), note(2, 4, 2), note(3, 2, 0), note(3, 2, 2), note(3, 4, 0), note(3, 4, 2), note(4, 4, 2)];
+    points.forEach(x => notes.push(<rect x={x[0]} y={x[1]} width={col} height={row * subColY / 2} fill={yellow} />));
 
     return (
       <div className="App">
