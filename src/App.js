@@ -3,7 +3,55 @@ import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
+    let meter = [];
+    let subMeter = [];
+    let horMeter = [];
+    let notes = [];
+    let numbers = [];
+
+    const canvasHeight = 300;
+    const canvasWidth = 800;
+    const gray = "#D8D8D8";
+    const primary = "#333333";
+    const yellow = "#FCFF0A";
+
+    const grid = 2;
+    const meterSize = 6;
+    const paddingX = 50;
+    const paddingY = 16;
+
+    const columns = 4;
+    const gridRows = 5;
+    const rows = gridRows + 3;
+    const subColX = 8;
+    const subColY = 2;
+    const col = (canvasWidth - 2 * paddingX) / (columns * subColX - 1);
+    const row = (canvasHeight - 2 * paddingY) / (rows * subColY - 1);
+    const fontSize = row;
+
+    for (let i = 0; i < columns; i++) {
+      const offsetX = paddingX + col * i * subColX;
+      const meterY = paddingY + row * subColY;
+      numbers.push(<text x={offsetX - fontSize / 8} y={paddingY + row * subColY / 2} font-family="Helvetica" font-size={fontSize} fill={gray}> {i+1} </text>);
+      meter.push(<rect x={offsetX} y={meterY} width={meterSize} height={row * (rows - 2) * subColY} fill={gray} />);
+      subMeter.push(<rect x={offsetX + col * subColX / 2} y={meterY} width={grid} height={row * (rows - 2) * subColY} fill={primary} />);
+    }
+
+    for (let i = 0; i < gridRows; i++) {
+      const offsetY = paddingY + row * (i + 2) * subColY;
+      horMeter.push(<rect x={paddingX} y={offsetY} width={canvasWidth - 2 * paddingX} height={grid} fill={primary} />);
+    }
+
+    const noteX = (i) => paddingY + row * (i + 2) * subColY;
+    const noteY = (i) => paddingX + col * i;
+
+    const points = [[77, 70], [77, 147], [77, 224], [168, 70], [168, 147], [213, 224], [347, 147], [437, 70], [437, 147], [547, 70], [547, 147], [702, 147]];
+    points.forEach(x => notes.push(<rect x={x[0]} y={x[1]} width="38" height="26" fill={yellow} />));
+
     return (
       <div className="App">
         <header className="App-header">
@@ -13,23 +61,12 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-        <svg width="800" height="300" version="1.1" xmlns="http://www.w3.org/2000/svg">
-          {[...Array(10)].map((x, i) => <rect x="21" y={45 + 25 * i} width="750" height="2" fill="#333333" />)}
-          {[...Array(4)].map((x, i) => <rect x={187 + 170 * i} y="36" width="2" height="250" fill="#333333" />)}
-          {[...Array(4)].map((x, i) => <rect x={94 + 170 * i} y="36" width="6" height="250" fill="#D8D8D8" />)}
-          {[...Array(4)].map((x, i) => <text x={93 + 170 * i} y="24" font-family="Helvetica" font-size="16" fill="#D8D8D8"> {i+1} </text>)}
-          <rect x="77" y="70" width="38" height="26" fill="#FCFF0A" />
-          <rect x="77" y="147" width="38" height="26" fill="#FCFF0A" />
-          <rect x="77" y="224" width="38" height="26" fill="#FCFF0A" />
-          <rect x="168" y="70" width="38" height="26" fill="#FCFF0A" />
-          <rect x="168" y="147" width="38" height="26" fill="#FCFF0A" />
-          <rect x="213" y="224" width="38" height="26" fill="#FCFF0A" />
-          <rect x="347" y="147" width="38" height="26" fill="#FCFF0A" />
-          <rect x="437" y="70" width="38" height="26" fill="#FCFF0A" />
-          <rect x="437" y="147" width="38" height="26" fill="#FCFF0A" />
-          <rect x="547" y="70" width="38" height="26" fill="#FCFF0A" />
-          <rect x="547" y="147" width="38" height="26" fill="#FCFF0A" />
-          <rect x="702" y="147" width="38" height="26" fill="#FCFF0A" />
+        <svg width={canvasWidth} height={canvasHeight} version="1.1" xmlns="http://www.w3.org/2000/svg" style={{backgroundColor: 'red'}}>
+          {numbers}
+          {subMeter}
+          {horMeter}
+          {meter}
+          {notes}
         </svg>
       </div>
     );
