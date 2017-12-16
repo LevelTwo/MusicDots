@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { range } from 'lodash';
 import { colors } from 'styles';
 
-export function Line({x, y, width, height, fill=colors.gray, ...props}) {
-  return <rect x y width height fill {...props} />;
+export function Line({...props}) {
+  return <rect {...props} />;
 }
 Line.propTypes = {
   x: PropTypes.number.isRequired,
@@ -16,74 +17,38 @@ Line.defaultProps = {
   fill: colors.gray,
 };
 
-export function Bar({x, y, width=2, height, ...props}) {
-  return <Line x y height width {...props} />;
-}
-Bar.propTypes = {
-  x: PropTypes.number.isRequired,
-  y: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-};
-Bar.defaultProps = {
-  width: 2,
+export function Beat({width=2, ...props}) {
+  return <Line width={width} {...props} />;
 }
 
-export function Staff({x, y, width, height=2, ...props}) {
-  return <Line x y width height {...props} />;
+export function Staff({height=2, ...props}) {
+  return <Line height={height} {...props} />;
 }
-Staff.propTypes = {
-  x: PropTypes.number.isRequired,
-  y: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number,
-};
-Staff.defaultProps = {
-  height: 2,
-};
 
-export function HyperBar({x, y, width, height, fill=colors.light, ...props}) {
-  return <Bar x y height width fill {...props} />;
+export function Bar({fill=colors.light, ...props}) {
+  return <Beat fill={fill} {...props} />;
 }
-HyperBar.propTypes = {
-  x: PropTypes.number.isRequired,
-  y: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  fill: PropTypes.string,
-};
-HyperBar.defaultProps = {
-  fill: colors.light,
-};
 
-export function HyperBarLabel({x, y, width, height, label, fill=colors.light, ...props}) {
-  return <text x y fill fontSize fontFamily="Helvetica" {...props}>{label + 1}</text>;
+export function Label({label, ...props}) {
+  return <text fontFamily="Helvetica" {...props}>{label}</text>;
 }
-HyperBarLabel.propTypes = {
+Label.propTypes = {
   x: PropTypes.number.isRequired,
   y: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
+  fontSize: PropTypes.number.isRequired,
   label: PropTypes.number.isRequired,
-  fill: PropTypes.string,
+  fill: PropTypes.string.isRequired,
 };
-HyperBarLabel.defaultProps = {
-  fill: colors.light,
-}
-
-export function StaffBarLabel({x, y, width, height, label, fill=colors.gray, ...props}) {
-  return <text x y fill fontSize fontFamily="Helvetica" {...props}>{label + 1}</text>;
-}
-StaffBarLabel.propTypes = {
-  x: PropTypes.number.isRequired,
-  y: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  label: PropTypes.number.isRequired,
-  fill: PropTypes.string,
-};
-StaffBarLabel.defaultProps = {
+Label.defaultProps = {
   fill: colors.gray,
+}
+
+export function BarLabel({fill=colors.light, ...props}) {
+  return <Label fill={fill} {...props} />;
+}
+
+export function Note({fill=colors.yellow, ...props}) {
+  return <Line fill={fill} {...props} />;
 }
 
 export default class Grid extends Component {
@@ -101,19 +66,6 @@ export default class Grid extends Component {
       paddingWidth: props.paddingWidth || 50,
       staves: props.staves || 30,
     }
-
-    this.bars = [];
-    this.hyperBars = [];
-    this.hyperBarLabels = [];
-    this.staves = [];
-    this.staffLabels = [];
-
-    // const rows = staves + 1;
-    // const col = (canvasWidth - 2 * paddingWidth) / (bars * beats);
-    // const row = (canvasHeight - 2 * paddingHeight) / rows;
-    // const noteWidth = col * 0.6;
-
-    console.log(this.state);
   }
 
   updateState = (newState) => {
@@ -121,9 +73,92 @@ export default class Grid extends Component {
   }
 
   render() {
-    const { canvasWidth, canvasHeight } = this.state;
+    const { barLength, bars, beats, canvasHeight, canvasWidth, fontSize, paddingHeight, paddingWidth, staves } = this.state;
+    const barUnit = (canvasWidth - 2 * paddingWidth) / (bars * beats);
+    const staffUnit = (canvasHeight - 2 * paddingHeight) / staves;
+    const barHeight = staffUnit * staves + barLength;
+    const noteWidth = barUnit * 0.6;
+
+    this.bars = range(bars + 1).map((bar, idx) => {
+      const className = "bar";
+      return <Bar
+        className={className}
+        key={`${className}-${idx}`}
+        x={paddingWidth + barUnit * beats * idx}
+        y={paddingHeight}
+        height={barHeight}
+      />
+    });
+
+    this.beats = range(bars * beats).map((beat, idx) => {
+      const className = "gridBeat";
+      return <Beat
+        className={className}
+        key={`${className}-${idx}`}
+        x={paddingWidth + barUnit * idx}
+        y={paddingHeight}
+        height={barHeight}
+      />
+    });
+
+    this.staves = range(staves).map((staff, idx) => {
+      const className = "gridStaff";
+      return <Staff
+        className={className}
+        key={`${className}-${idx}`}
+        x={paddingWidth}
+        y={paddingHeight + staffUnit * (idx + 1)}
+        width={canvasWidth - 2 * paddingWidth}
+      />
+    });
+
+    this.barLabels = range(bars).map((bar, idx) => {
+      const className = "gridBarLabel";
+      return <BarLabel
+        className={className}
+        key={`${className}-${idx}`}
+        x={paddingWidth + barUnit * beats * idx + fontSize}
+        y={paddingHeight + fontSize / 2}
+        fontSize={fontSize}
+        label={idx+1}
+      />
+    });
+
+    this.staffLabels = range(staves-1).map((staff, idx) => {
+      const className = "gridStaffLabel";
+      return <Label
+        className={className}
+        key={`${className}-${idx}`}
+        x={paddingWidth - ((idx < 9) ? 1 : 1.5) * fontSize - noteWidth / 2}
+        y={paddingHeight + staffUnit * idx + staffUnit / 2 + barUnit / 2}
+        fontSize={fontSize}
+        label={idx+1}
+      />
+    });
+
+    const points = [[1, 1, 0], [1, 2, 0], [1, 3, 0], [1, 2, 2], [1, 2, 4], [1, 4, 0], [1, 4, 2], [2, 1, 4], [2, 4, 2],
+                    [3, 2, 0], [3, 2, 2], [3, 4, 0], [3, 4, 2], [4, 4, 2]];
+    this.notes = points.map((note, idx) => {
+      const [bar, beat, staff] = note;
+      const className = "gridNote";
+      return <Note
+        className={className}
+        key={`${className}-${idx}`}
+        x={paddingWidth + barUnit * ((bar - 1) * beats + (beat - 1)) - noteWidth / 2 + barLength / 2}
+        y={paddingHeight + staffUnit * (staff + 1) + barLength}
+        width={noteWidth}
+        height={staffUnit - barLength}
+      />;
+    });
+
     return (
-      <svg width={canvasWidth} height={canvasHeight} version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <svg className="Grid" width={canvasWidth} height={canvasHeight} version="1.1" xmlns="http://www.w3.org/2000/svg">
+        {this.staves}
+        {this.beats}
+        {this.bars}
+        {this.notes}
+        {this.barLabels}
+        {this.staffLabels}
       </svg>
     );
   }
