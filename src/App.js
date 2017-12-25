@@ -4,9 +4,10 @@ import './App.css';
 
 class App extends Component {
   render() {
+    const grid = <Grid />;
     return (
       <div className="App">
-        <Grid />
+        {grid}
       </div>
     );
   }

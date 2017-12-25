@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { range } from 'lodash';
+import { Value } from 'components/Value';
 import { colors } from 'styles';
 
 export function Line({...props}) {
@@ -68,15 +69,37 @@ export default class Grid extends Component {
     }
   }
 
+  incrementBars = () => {
+    const shouldUpdate = this.validateBars(this.state.bars + 1);
+    shouldUpdate && this.setState({ bars: this.state.bars + 1 });
+    return this.state.bars + shouldUpdate;
+  }
+
+  decrementBars = () => {
+    const shouldUpdate = this.validateBars(this.state.bars - 1);
+    shouldUpdate && this.setState({ bars: this.state.bars - 1 });
+    return this.state.bars - shouldUpdate;
+  }
+
   updateState = (newState) => {
     this.setState(newState);
+  }
+
+  updateValue = (state, validate) => {
+    return (evt) => {
+      validate(evt.target.value) && this.setState({ [state] : evt.target.value });
+    }
+  }
+
+  validateBars(bars) {
+    return bars && (bars > 3) && (bars < 11);
   }
 
   render() {
     const { barLength, bars, beats, canvasHeight, canvasWidth, fontSize, paddingHeight, paddingWidth, staves } = this.state;
     const barUnit = (canvasWidth - 2 * paddingWidth) / (bars * beats);
-    const staffUnit = (canvasHeight - 2 * paddingHeight) / staves;
-    const barHeight = staffUnit * staves + barLength;
+    const staffUnit = (canvasHeight - 2 * paddingHeight) / (staves + 1);
+    const barHeight = staffUnit * (staves + 1) + barLength;
     const noteWidth = barUnit * 0.6;
 
     this.bars = range(bars + 1).map((bar, idx) => {
@@ -101,7 +124,7 @@ export default class Grid extends Component {
       />
     });
 
-    this.staves = range(staves).map((staff, idx) => {
+    this.staves = range(staves + 1).map((staff, idx) => {
       const className = "gridStaff";
       return <Staff
         className={className}
@@ -120,11 +143,11 @@ export default class Grid extends Component {
         x={paddingWidth + barUnit * beats * idx + fontSize}
         y={paddingHeight + fontSize / 2}
         fontSize={fontSize}
-        label={idx+1}
+        label={idx + 1}
       />
     });
 
-    this.staffLabels = range(staves-1).map((staff, idx) => {
+    this.staffLabels = range(staves).map((staff, idx) => {
       const className = "gridStaffLabel";
       return <Label
         className={className}
@@ -132,7 +155,7 @@ export default class Grid extends Component {
         x={paddingWidth - ((idx < 9) ? 1 : 1.5) * fontSize - noteWidth / 2}
         y={paddingHeight + staffUnit * idx + staffUnit / 2 + barUnit / 2}
         fontSize={fontSize}
-        label={idx+1}
+        label={idx + 1}
       />
     });
 
@@ -152,14 +175,24 @@ export default class Grid extends Component {
     });
 
     return (
-      <svg className="Grid" width={canvasWidth} height={canvasHeight} version="1.1" xmlns="http://www.w3.org/2000/svg">
-        {this.staves}
-        {this.beats}
-        {this.bars}
-        {this.notes}
-        {this.barLabels}
-        {this.staffLabels}
-      </svg>
+      <div>
+        <Value
+          bars={this.state.bars}
+          label={'Bars'}
+          onIncrement={this.incrementBars}
+          onDecrement={this.decrementBars}
+          onInput={this.updateValue('bars', this.validateBars)}
+        />
+        <div>
+          <svg className="Grid" width={canvasWidth} height={canvasHeight} version="1.1" xmlns="http://www.w3.org/2000/svg">
+            {this.beats}
+            {this.bars}
+            {this.notes}
+            {this.barLabels}
+            {this.staffLabels}
+          </svg>
+        </div>
+      </div>
     );
   }
 }
