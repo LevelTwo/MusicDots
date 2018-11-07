@@ -4,8 +4,11 @@ import { range } from 'lodash';
 import { Value } from 'components/Value';
 import { colors } from 'styles';
 
-export function Line({...props}) {
-  return <rect {...props} />;
+const minBars = 4;
+const maxBars = 10;
+
+export function Line({className='line', ...props}) {
+  return <rect className={className} {...props} />;
 }
 Line.propTypes = {
   x: PropTypes.number.isRequired,
@@ -15,7 +18,7 @@ Line.propTypes = {
   fill: PropTypes.string,
 };
 Line.defaultProps = {
-  fill: colors.gray,
+  fill: colors.lightGray,
 };
 
 export function Beat({width=2, ...props}) {
@@ -26,7 +29,7 @@ export function Staff({height=2, ...props}) {
   return <Line height={height} {...props} />;
 }
 
-export function Bar({fill=colors.light, ...props}) {
+export function Bar({fill=colors.gray, ...props}) {
   return <Beat fill={fill} {...props} />;
 }
 
@@ -92,7 +95,7 @@ export default class Grid extends Component {
   }
 
   validateBars(bars) {
-    return bars && (bars > 3) && (bars < 11);
+    return bars && (bars >= minBars) && (bars <= maxBars);
   }
 
   render() {
@@ -140,7 +143,7 @@ export default class Grid extends Component {
       return <BarLabel
         className={className}
         key={`${className}-${idx}`}
-        x={paddingWidth + barUnit * beats * idx + fontSize}
+        x={paddingWidth + barUnit * beats * idx + barUnit / 2 - fontSize / 4}
         y={paddingHeight + fontSize / 2}
         fontSize={fontSize}
         label={idx + 1}
@@ -153,7 +156,7 @@ export default class Grid extends Component {
         className={className}
         key={`${className}-${idx}`}
         x={paddingWidth - ((idx < 9) ? 1 : 1.5) * fontSize - noteWidth / 2}
-        y={paddingHeight + staffUnit * idx + staffUnit / 2 + barUnit / 2}
+        y={paddingHeight + staffUnit * (idx + 1) + (staffUnit + fontSize) / 2}
         fontSize={fontSize}
         label={idx + 1}
       />
@@ -161,6 +164,7 @@ export default class Grid extends Component {
 
     const points = [[1, 1, 0], [1, 2, 0], [1, 3, 0], [1, 2, 2], [1, 2, 4], [1, 4, 0], [1, 4, 2], [2, 1, 4], [2, 4, 2],
                     [3, 2, 0], [3, 2, 2], [3, 4, 0], [3, 4, 2], [4, 4, 2]];
+
     this.notes = points.map((note, idx) => {
       const [bar, beat, staff] = note;
       const className = "gridNote";
@@ -188,6 +192,7 @@ export default class Grid extends Component {
             {this.beats}
             {this.bars}
             {this.notes}
+            {this.staves}
             {this.barLabels}
             {this.staffLabels}
           </svg>

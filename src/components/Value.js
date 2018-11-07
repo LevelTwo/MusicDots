@@ -25,6 +25,7 @@ export class ValueButton extends Component {
     super(props);
     this.state = {
       styles: {
+        backgroundColor: colors.background,
         border: `1px solid ${colors.gray}`,
         borderLeft: 0,
         color: colors.yellow,
