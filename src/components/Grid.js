@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { range } from 'lodash';
-import { Value } from 'components/Value';
+import { Playhead } from 'components/Playhead';
+import { Value, ValueButton } from 'components/Value';
 import { colors } from 'styles';
+import 'components/Grid.css';
 
-const minBars = 4;
-const maxBars = 10;
+const MIN_BARS = 4;
+const MAX_BARS = 10;
 
-export function Line({className='line', ...props}) {
+export function Line({className="line", ...props}) {
   return <rect className={className} {...props} />;
 }
 Line.propTypes = {
@@ -69,7 +71,8 @@ export default class Grid extends Component {
       paddingHeight: props.paddingHeight || 50,
       paddingWidth: props.paddingWidth || 50,
       staves: props.staves || 30,
-    }
+      playheadRun: false,
+    };
   }
 
   incrementBars = () => {
@@ -95,7 +98,7 @@ export default class Grid extends Component {
   }
 
   validateBars(bars) {
-    return bars && (bars >= minBars) && (bars <= maxBars);
+    return bars && (bars >= MIN_BARS) && (bars <= MAX_BARS);
   }
 
   render() {
@@ -187,14 +190,26 @@ export default class Grid extends Component {
           onDecrement={this.decrementBars}
           onInput={this.updateValue('bars', this.validateBars)}
         />
+        <ValueButton
+          className="play"
+          label="play"
+          onClick={() => this.setState({ playheadRun: !this.state.playheadRun })}
+        />
         <div>
-          <svg className="Grid" width={canvasWidth} height={canvasHeight} version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <svg className="Grid" width={canvasWidth} height={canvasHeight} style={{backgroundColor: "red"}} version="1.1" xmlns="http://www.w3.org/2000/svg">
             {this.beats}
             {this.bars}
             {this.notes}
             {this.staves}
             {this.barLabels}
             {this.staffLabels}
+            <Playhead
+              bpm={120}
+              start={paddingWidth}
+              end={paddingWidth + barUnit * beats * bars}
+              bar={barUnit}
+              running={this.state.playheadRun}
+            />
           </svg>
         </div>
       </div>
