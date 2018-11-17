@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Bar } from 'components/Grid';
 
-export default class Playhead extends Component {
+export default class PlayHead extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,11 +33,11 @@ export default class Playhead extends Component {
     const xx = (nextStep > this.state.end) ? this.state.start : nextStep;
     this.setState({x: xx});
     this.requestId = requestAnimationFrame(this.start);
-  }
+  };
 
   stop = () => {
     this.requestId && cancelAnimationFrame(this.requestId);
-  }
+  };
 
   render() {
     const className = this.props.running ? "active" : "inactive";
@@ -55,6 +55,6 @@ export default class Playhead extends Component {
     );
   }
 }
-Playhead.propTypes = {
+PlayHead.propTypes = {
   bpm: PropTypes.number.isRequired,
-}
+};

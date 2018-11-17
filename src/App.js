@@ -6,6 +6,8 @@ import './App.css';
 const MIN_BARS = 2;
 const MAX_BARS = 4;
 
+const validateBars = bars => bars && (bars >= MIN_BARS) && (bars <= MAX_BARS);
+
 class App extends Component {
   state = {
     barLength: 2,
@@ -16,37 +18,33 @@ class App extends Component {
     fontSize: 14,
     paddingHeight: 50,
     paddingWidth: 75,
-    staves: 30,
-    playheadRun: false,
+    staffs: 30,
+    playHeadRun: false,
   };
 
-  validateBars(bars) {
-    return bars && (bars >= MIN_BARS) && (bars <= MAX_BARS);
-  }
-
   incrementBars = () => {
-    const shouldUpdate = this.validateBars(this.state.bars + 1);
+    const shouldUpdate = validateBars(this.state.bars + 1);
     shouldUpdate && this.setState({ bars: this.state.bars + 1 });
     console.log(shouldUpdate + '/' + this.state.bars);
     return this.state.bars + shouldUpdate;
-  }
+  };
 
   decrementBars = () => {
-    const shouldUpdate = this.validateBars(this.state.bars - 1);
+    const shouldUpdate = validateBars(this.state.bars - 1);
     shouldUpdate && this.setState({ bars: this.state.bars - 1 });
     console.log(shouldUpdate + '/' + this.state.bars);
     return this.state.bars - shouldUpdate;
-  }
+  };
 
   updateValue = (state, validate) => {
     return (evt) => {
       validate(evt.target.value) && this.setState({ [state] : evt.target.value });
     }
-  }
+  };
 
-  togglePlayhead = () => {
-    this.setState({ playheadRun: !this.state.playheadRun });
-  }
+  togglePlayHead = () => {
+    this.setState({ playHeadRun: !this.state.playHeadRun });
+  };
 
   render() {
     return (
@@ -55,8 +53,8 @@ class App extends Component {
           bars={this.state.bars}
           incrementBars={this.incrementBars}
           decrementBars={this.decrementBars}
-          updateBars={this.updateValue('bars', this.validateBars)}
-          togglePlayhead={this.togglePlayhead}
+          updateBars={this.updateValue('bars', validateBars)}
+          togglePlayHead={this.togglePlayHead}
         />
         <Grid {...this.state} />
       </div>

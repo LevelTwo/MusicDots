@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { range } from 'lodash';
-import Playhead from 'components/Playhead';
-import { colors } from 'styles';
+import PlayHead from 'components/PlayHead';
+import { Label, Line } from 'components/Base';
 import 'components/Grid.css';
 
 export default class Grid extends Component {
   render() {
-    const { barLength, bars, beats, canvasHeight, canvasWidth, fontSize, paddingHeight, paddingWidth, staves } = this.props;
+    const { barLength, bars, beats, canvasHeight, canvasWidth, fontSize, paddingHeight, paddingWidth, staffs } = this.props;
     const beatUnit = (canvasWidth - 2 * paddingWidth) / (bars * beats);
-    const staffUnit = (canvasHeight - 2 * paddingHeight) / (staves + 1);
-    const barHeight = staffUnit * (staves + 1) + barLength;
+    const staffUnit = (canvasHeight - 2 * paddingHeight) / (staffs + 1);
+    const barHeight = staffUnit * (staffs + 1) + barLength;
     const noteWidth = beatUnit * 0.6;
 
     this.bars = range(bars + 1).map((bar, idx) => {
@@ -35,7 +35,7 @@ export default class Grid extends Component {
       />
     });
 
-    this.staves = range(staves + 1).map((staff, idx) => {
+    this.staffs = range(staffs + 1).map((staff, idx) => {
       const className = "gridStaff";
       return <Staff
         className={className}
@@ -60,7 +60,7 @@ export default class Grid extends Component {
       />
     });
 
-    this.staffLabels = range(staves).map((staff, idx) => {
+    this.staffLabels = range(staffs).map((staff, idx) => {
       const className = "gridStaffLabel";
       return <Label
         className={className}
@@ -88,13 +88,13 @@ export default class Grid extends Component {
       />;
     });
 
-    this.playhead = <Playhead
+    this.playHead = <PlayHead
       bpm={120}
       start={paddingWidth}
       end={paddingWidth + beatUnit * beats * bars}
       beat={beatUnit}
-      running={this.props.playheadRun}
-    />
+      running={this.props.playHeadRun}
+    />;
 
     return (
       <div className="GridContainer">
@@ -103,30 +103,32 @@ export default class Grid extends Component {
             {this.beats}
             {this.bars}
             {this.notes}
-            {this.staves}
+            {this.staffs}
             {this.barLabels}
             {this.staffLabels}
-            {this.playhead}
+            {this.playHead}
           </svg>
         </div>
       </div>
     );
   }
 }
+Grid.propTypes = {
+  barLength: PropTypes.number.isRequired,
+  bars: PropTypes.number.isRequired,
+  beats: PropTypes.number.isRequired,
+  canvasHeight: PropTypes.number.isRequired,
+  canvasWidth: PropTypes.number.isRequired,
+  fontSize: PropTypes.number.isRequired,
+  paddingHeight: PropTypes.number.isRequired,
+  paddingWidth: PropTypes.number.isRequired,
+  staffs: PropTypes.number.isRequired,
+  playHeadRun: PropTypes.bool.isRequired,
+};
 
-export function Line({className="line", ...props}) {
-  return <rect className={className} {...props} />;
+export function Note({fill="var(--yellow)", ...props}) {
+  return <Line fill={fill} {...props} />;
 }
-Line.propTypes = {
-  x: PropTypes.number.isRequired,
-  y: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  fill: PropTypes.string,
-};
-Line.defaultProps = {
-  fill: colors.lightGray,
-};
 
 export function Beat({width=2, ...props}) {
   return <Line width={width} {...props} />;
@@ -136,28 +138,10 @@ export function Staff({height=2, ...props}) {
   return <Line height={height} {...props} />;
 }
 
-export function Bar({fill=colors.gray, ...props}) {
+export function Bar({fill="var(--gray)", ...props}) {
   return <Beat fill={fill} {...props} />;
 }
 
-export function Label({label, ...props}) {
-  return <text fontFamily="Helvetica" {...props}>{label}</text>;
-}
-Label.propTypes = {
-  x: PropTypes.number.isRequired,
-  y: PropTypes.number.isRequired,
-  fontSize: PropTypes.number.isRequired,
-  label: PropTypes.number.isRequired,
-  fill: PropTypes.string.isRequired,
-};
-Label.defaultProps = {
-  fill: colors.gray,
-}
-
-export function BarLabel({fill=colors.light, ...props}) {
+export function BarLabel({fill="var(--light)", ...props}) {
   return <Label fill={fill} {...props} />;
-}
-
-export function Note({fill=colors.yellow, ...props}) {
-  return <Line fill={fill} {...props} />;
 }

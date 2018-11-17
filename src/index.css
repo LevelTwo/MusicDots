@@ -7,3 +7,18 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+:root {
+  --light: #D8D8D8;
+  --gray: #333333;
+  --light-gray: #666666;
+  --yellow: #FCFF0A;
+  --background: #1A1A1A;
+}
+
+/* Remove the arrow controls from number inputs */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

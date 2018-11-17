@@ -1,0 +1,9 @@
+.Controls {
+  background-color: green;
+  height: 100vh;
+  padding: 3rem 1rem;
+}
+
+.ControlsContainer {
+  margin-bottom: 1rem;
+}
