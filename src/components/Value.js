@@ -17,7 +17,9 @@ export function FlexColumn(props) {
 }
 
 export function FlexRow(props) {
-  return <FlexColumn style={{ flexDirection: 'row', ...props.style }}>{props.children}</FlexColumn>
+  return <FlexColumn style={{ flexDirection: 'row', ...props.style }}>
+    {props.children}
+  </FlexColumn>
 }
 
 export class ValueButton extends Component {
@@ -77,7 +79,7 @@ ValueButton.propTypes = {
   style: PropTypes.object,
 }
 
-export class Value extends Component {
+export default class Value extends Component {
   getStyles() {
     const styles = {
       input: {
@@ -97,6 +99,19 @@ export class Value extends Component {
       },
     };
     return styles;
+  }
+
+  preventArrowKey = e => {
+    if (e.keyCode === 38 || e.keyCode === 40)
+      e.preventDefault();
+  }
+
+  componentDidMount() {
+    this.input.addEventListener('keydown', this.preventArrowKey);
+  }
+
+  componentWillUnmount() {
+    this.input.removeEventListener('keydown', this.preventArrowKey);
   }
 
   render() {
