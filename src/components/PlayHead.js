@@ -3,16 +3,13 @@ import PropTypes from 'prop-types';
 import { Bar } from 'components/Grid';
 
 export default class PlayHead extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      start: this.props.start,
-      x: this.props.start,
-      end: this.props.end,
-      lastUpdate: null,
-      delta: this.props.beat * this.props.bpm / 60 / 60,
-    }
-  }
+  state = {
+    start: this.props.start || 0,
+    x: this.props.start || 0,
+    end: this.props.end || 0,
+    lastUpdate: null,
+    delta: this.props.beat * this.props.bpm / 60 / 60,
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
@@ -43,13 +40,13 @@ export default class PlayHead extends Component {
     const className = this.props.running ? "active" : "inactive";
 
     return (
-      <svg key="playhead">
+      <svg className="PlayHead">
         <Bar
           className={className}
           x={this.state.x}
-          key="asdf"
-          y={10}
-          height={100}
+          y={0}
+          height={this.props.height}
+          fill="white"
         />
       </svg>
     );

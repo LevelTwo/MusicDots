@@ -1,9 +1,15 @@
 .Controls {
-  background-color: green;
-  height: 100vh;
+  background-color: var(--background);
+  border: 1pt solid var(--gray);
+  height: 100%;
+  width: 80px;
   padding: 3rem 1rem;
+  display: flex;
+  flex-flow: column wrap;
+  margin-bottom: 1rem;
+  color: var(--yellow);
 }
 
-.ControlsContainer {
-  margin-bottom: 1rem;
+.ControlsMenu {
+  margin: inherit;
 }

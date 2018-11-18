@@ -9,6 +9,14 @@ NamedDiv.propTypes = {
   className: PropTypes.string.isRequired,
 };
 
+export function FlexColumn(props) {
+  return <NamedDiv className="FlexColumn" {...props} />;
+}
+
+export function FlexRow(props) {
+  return <NamedDiv className="FlexRow" {...props} />;
+}
+
 export function Line({className="line", ...props}) {
   return <rect className={className} {...props} />;
 }

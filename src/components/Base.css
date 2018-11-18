@@ -1,0 +1,11 @@
+.FlexColumn {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.FlexRow {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+}

@@ -1,33 +1,28 @@
-.FlexColumn {
-  display: inline-flex;
-  flex-direction: column;
-}
-
-.FlexRow {
-  display: inline-flex;
-  flex-direction: row;
-}
-
 .Value {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
   margin: inherit;
 }
 
 .ValueInput {
-  border: 1px solid var(--gray);
   background: var(--background);
+  border: 1px solid var(--gray);
   box-sizing: border-box;
   color: var(--yellow);
-  height: 48px;
+  height: 47px;
   line-height: 1.65;
-  outline: 0;
-  padding-left: 20px;
-  width: 48px;
   margin: inherit;
+  outline: 0;
+  padding-right: 13px;
+  text-align: right;
+  width: 47px;
 }
 
 .ValueLabel {
   font-size: 11px;
   padding: 5px;
+  text-align: center;
 }
 
 .ValueButton {
@@ -45,4 +40,23 @@
 
 .ValueButton:hover {
   background-color: var(--gray);
+  transition: 0.2s ease-in;
+}
+
+.Button {
+  background-color: var(--background);
+  border: 1px solid var(--gray);
+  border-radius: 15px;
+  color: var(--yellow);
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 2;
+  margin: inherit;
+  text-align: center;
+  user-select: none;
+}
+
+.Button:hover {
+  background-color: var(--gray);
+  transition: 0.2s ease-in;
 }

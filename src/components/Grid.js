@@ -18,8 +18,8 @@ export default class Grid extends Component {
       return <Bar
         className={className}
         key={`${className}-${idx}`}
-        x={paddingWidth + beatUnit * beats * idx}
-        y={paddingHeight}
+        x={beatUnit * beats * idx}
+        y={0}
         height={barHeight}
       />
     });
@@ -29,8 +29,8 @@ export default class Grid extends Component {
       return <Beat
         className={className}
         key={`${className}-${idx}`}
-        x={paddingWidth + beatUnit * idx}
-        y={paddingHeight}
+        x={beatUnit * idx}
+        y={0}
         height={barHeight}
       />
     });
@@ -40,8 +40,8 @@ export default class Grid extends Component {
       return <Staff
         className={className}
         key={`${className}-${idx}`}
-        x={paddingWidth}
-        y={paddingHeight + staffUnit * (idx + 1)}
+        x={0}
+        y={staffUnit * (idx + 1)}
         width={canvasWidth - 2 * paddingWidth}
       />
     });
@@ -89,24 +89,32 @@ export default class Grid extends Component {
     });
 
     this.playHead = <PlayHead
-      bpm={120}
-      start={paddingWidth}
-      end={paddingWidth + beatUnit * beats * bars}
+      bpm={this.props.bpm}
+      end={beatUnit * beats * bars}
       beat={beatUnit}
       running={this.props.playHeadRun}
+      height={barHeight}
     />;
 
     return (
       <div className="GridContainer">
-        <div style={{backgroundColor: "blue"}}>
-          <svg className="Grid" width={canvasWidth} height={canvasHeight} style={{backgroundColor: "red", margin: `0pt 15pt`}} version="1.1" xmlns="http://www.w3.org/2000/svg">
-            {this.beats}
-            {this.bars}
+        <div>
+          <svg
+            className="Grid"
+            width={canvasWidth}
+            height={canvasHeight}
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <svg x={paddingWidth} y={paddingHeight}>
+              {this.beats}
+              {this.bars}
+              {this.staffs}
+              {this.playHead}
+            </svg>
             {this.notes}
-            {this.staffs}
             {this.barLabels}
             {this.staffLabels}
-            {this.playHead}
           </svg>
         </div>
       </div>
@@ -142,6 +150,6 @@ export function Bar({fill="var(--gray)", ...props}) {
   return <Beat fill={fill} {...props} />;
 }
 
-export function BarLabel({fill="var(--light)", ...props}) {
+export function BarLabel({fill="var(--gray)", ...props}) {
   return <Label fill={fill} {...props} />;
 }
